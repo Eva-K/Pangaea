@@ -1,0 +1,42 @@
+---
+title: "Spreadsheet Wrangling"
+author: "E. Kovacs"
+date: "22 July 2019"
+output: html_document
+---
+
+# Trying to tidy up and Manipulate spreadsheets/text files.
+
+```{r}
+install.packages("data.table")
+
+library(tidyverse)
+library(data.table)
+
+```
+
+# Read in the Data 
+
+```{r read in text files}
+
+filelist <- list.files(pattern = "*.*.txt") # lists all the files in the directory
+
+# merge these files into a single dataframe
+ 
+for (file in filelist({
+  # if the merged dataset doesn't exist then create it
+  if (!exists("SGBRpangaea")){
+    SGBRpangaea <- read.table(file, header = TRUE, sep = "\t")
+  }
+  # if the merged dataset does exist then append to it
+  if (exists("SGBRpangaea")){
+    temp_dataset <- read.table(file, header = TRUE, sep = "\t")
+    SGBRpangaea <- rbind(SGBRpangaea, temp_dataset)
+    rm(temp_dataset)
+  }
+})) ## ERROR - unexpected end of document
+
+
+
+```
+

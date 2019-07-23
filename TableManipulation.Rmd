@@ -18,15 +18,24 @@ library(data.table)
 # Read in the Data 
 
 ```{r read in text files}
-# set working directory
 
+# set working directory
 setwd("C:/Users/uqekovac/Documents/R/Pangaea/Pangaea")
 
+# Get the file names
 
-temp = list.files(pattern = "*.txt")
-photos <- lapply(temp, read.)
+temp = list.files(pattern = "*.csv") 
 
-filelist <- list.files(pattern = "*.*.txt") # lists all the files in the directory
+photos <- lapply(temp, read.delim) # each file as a sub of photos
+
+filelist <- list.files(pattern = "*.*.csv") # lists all the files in the directory
+
+filelist
+
+# do all at once - read and bind
+
+SGBR <- do.call(rbind, lapply(temp, read.delim)) # Errors generated saying line "x" appears to contain embedded nulls
+
 
 # merge these files into a single dataframe
  
@@ -42,6 +51,127 @@ for (file in filelist({
     rm(temp_dataset)
   }
 })) ## ERROR - unexpected end of document
+
+
+
+```
+
+# read in a single file FIRST - find out encoding and read again!
+
+```{r Trying to solve the embedded nulls}
+
+setwd("C:/Users/uqekovac/Documents/R/Pangaea/Pangaea")
+
+D21 <- read.csv("C:/Users/uqekovac/Documents/R/Pangaea/Pangaea/d21.csv") 
+# generating embedded  nulls error again
+
+# guess encoding
+guess_encoding("C:/Users/uqekovac/Documents/R/Pangaea/Pangaea/d21.csv", n_max = 1000)
+
+  ## says UTF-16LE
+
+# Try reading again
+D21 <- read.csv("C:/Users/uqekovac/Documents/R/Pangaea/Pangaea/d21.csv", fileEncoding = "UTF-16LE") 
+
+  ## Worked!!
+
+
+```
+
+# Try reading all files in as per before
+# this time stipulating the encoding
+# and bind into one dataframe
+
+```{r read all files with correct encoding}
+
+temp = list.files(pattern = "*.csv") 
+
+photos <- lapply(temp, read.delim, fileEncoding = "UTF-16LE") # each file as a sub of photos 
+  
+  ## Yay! Worked. But is a list of dataframes
+
+# Try read and bind into a single dataframe
+SGBR <- do.call(rbind, lapply(temp, read.delim, fileEncoding = "UTF-16LE"))
+
+  ## Worked - one dataframe with all photos listed
+
+```
+
+# Data wrangling - to photo name only
+
+```{r try to cut down the file names to not be a path just a photo name}
+
+head(SGBR)
+colnames(SGBR)
+
+# Try separating the long names into something else based on removing the first 107 characters
+
+SGBR2 <- separate(SGBR$X.TYPE.Selected.System.IO.DirectoryInfo, c("Path", "PhotoName"), sep = 107)
+
+# These are factors so convert to characters
+
+SGBR$X.TYPE.Selected.System.IO.DirectoryInfo <- as.character(SGBR$X.TYPE.Selected.System.IO.DirectoryInfo)
+
+# Now run separate code
+
+SGBR2 <- separate(SGBR$X.TYPE.Selected.System.IO.DirectoryInfo, names = c("Path", "PhotoName"), sep = 107)
+
+# not running on character vector (STUPID) - need to use the column name
+
+# Doesn't have one so make one
+
+colnames(SGBR) <- c("Path")
+
+# Let's try splitting again
+# as above
+
+SGBR2 <- separate(SGBR$Path, names = c("Path", "PhotoName"), sep = 107)
+# Not working
+
+# Try 
+SGBR2 <- separate(SGBR, "Path", c("Path", "PhotoName"), sep = 107)
+
+# 107 is too many (x 10)
+# Try
+SGBR2 <- separate(SGBR, "Path", c("Path", "PhotoName"), sep = 97)
+
+# Each name seems to be variable - probably based on the variability in the path string
+# Try splitting the photoname column by the "\"
+# HOWEVER to have special meanings \ and ^
+
+  ## Need to escape the backslashes but they need a DOUBLE escape as a backslash is an escape :/
+
+SGBR3 <- separate(SGBR2, "PhotoName", c(NA, "Photo"), sep = "\\\\")
+
+# Has worked except for names where there was no \ 
+# Here it has returned NA
+
+SGBR3b <- na.omit(SGBR3)
+
+# This appears to have worked
+# Now how to get rid of the long names in SGBR2...??
+
+# Go back a couple of steps: separate PhotoName into two columns
+# One with the \ names and one with the already good names
+
+SGBR4 <- separate(SGBR2, "PhotoName", c("PN", "Photo"), sep = "\\\\")
+
+# That's an interesting output - now the letters occurring before the \
+# have been placed in the same column as those names that had no \
+# whilst what followed the \ has gone into another column!
+
+# Should now be able to remove rows based on the two characters (depending on how many there are...)
+
+# No - more complicated cause now some of the names don't make any sense
+# as they are missing dates etc
+# This has been wrong since SGBR2 :( 
+
+
+```
+
+# Using new found knowledge, let's separate based on \
+
+```{r Separating based on special characters}
 
 
 

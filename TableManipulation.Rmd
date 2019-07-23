@@ -18,6 +18,13 @@ library(data.table)
 # Read in the Data 
 
 ```{r read in text files}
+# set working directory
+
+setwd("C:/Users/uqekovac/Documents/R/Pangaea/Pangaea")
+
+
+temp = list.files(pattern = "*.txt")
+photos <- lapply(temp, read.)
 
 filelist <- list.files(pattern = "*.*.txt") # lists all the files in the directory
 

@@ -172,6 +172,7 @@ SGBR4 <- separate(SGBR2, "PhotoName", c("PN", "Photo"), sep = "\\\\")
 
 ```
 
+# START HERE
 # Using new found knowledge, let's separate based on \
 
 ```{r Separating based on special characters}
@@ -204,11 +205,11 @@ BigSGBR3 <- na.omit(BigSGBR2)
 
 # Now remove rows that have non-photo elements
 
-BigSGBR4 <- subset(BigSGBR3, PhotoName == "Exc")
+BigSGBR4 <- subset(BigSGBR3, PhotoName == "Exc") # doesn't work
 
 # This returns a df with only those rows in it
 
-BigSGBR4 <- subset(BigSGBR3, PhotoName != "Exc")
+BigSGBR4 <- subset(BigSGBR3, PhotoName != "Exc") # This has worked.
 
 # This has worked.
 
@@ -223,14 +224,28 @@ trial <- tidyselect::vars_select(names(BigSGBR4$PhotoName), starts_with('2', ign
 
 trial <- subset(BigSGBR4, starts_with("2"))
 # Nope
+rm(trial)
 
-trial <- subset(BigSGBR4, BigSGBR4$PhotoName != starts_with("2"))
+PhotoPaths <- BigSGBR4[BigSGBR4$PhotoName %like% "2019",] # THIS WORKS
 
 ```
+
+# Remove unwanted rows
+
+```{r}
+
+Pangaea <- select(PhotoPaths, -c(1,2,3,4,5,6,7,8))
+
+
+```
+
 # Write to csv
+
 ```{r write to file}
 
-write.table(BigSGBR4, "BigSGBR4.csv", sep="\t")
+write.table(Pangaea, "PangaeaSGBR2019.csv", quote = FALSE, row.names = FALSE, sep="\t") 
+# use quote = F so the output is not surround by quotes
+# use row.names = F so that the row number is tacked onto the beginning of the photoname.
 
 ```
 

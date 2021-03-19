@@ -1,0 +1,116 @@
+---
+title: "Heron2019and2020"
+author: "Eva Kovacs"
+date: "19/03/2021"
+output: html_document
+---
+
+## packages
+
+```{r what you need }
+install.packages("tidyverse")
+install.packages("janitor")
+install.packages("skimr")
+install.packages("stringr")
+install.packages("data.table")
+install.packages("ggthemes")
+install.packages("RColorBrewer")
+install.packages("gmodels")
+install.packages("dplyr")
+install.packages("plyr")
+install.packages("foreign")
+##install.packages('Rtools')
+##install.packages('jwbannister/seepsVeg')
+
+
+library(tidyverse) # use install.packages("tidyverse") if receive an error message
+library(janitor) # use install.packages("janitor") if receive an error message
+library(skimr)  # use install.packages("skimr") if receive an error message
+library(stringr) # use install.packages("stringr") if receive an error message
+library(data.table)
+library(ggthemes)
+library(RColorBrewer)
+library(gmodels)
+library(dplyr)
+library(plyr)
+library(foreign)
+##library(Rtools)
+##library(jwbannister/seepsVeg)
+
+```
+
+
+# Set the number of significant digits to preserve
+
+```{r}
+
+# Set
+options(digits = 10)
+
+#Check
+options()
+
+```
+
+# Combine 2019 and 2020
+
+```{r}
+Heron2020 <- bind_rows(X2020D1, X2020D2, X2020D3, X2020D4,X2020D5,X2020S1,X2020S2,X2020S3,X2020S4, X2020S5)
+
+Heron2019 <- bind_rows(X2019D1, X2019D2, X2019D3, X2019D4,X2019D5,X2019D6,X2019D7, X2019S1,X2019S2)
+
+# Write to file
+write.csv(Heron2019, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/Heron2019_waypoints.csv")
+write.csv(Heron2020, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/Heron2020_waypoints.csv")
+
+```
+
+
+# add lats and longs to CoralNet output
+
+```{r}
+#wrangle photo names 2020
+Heron2020_waypoints <- add_column(Heron2020_waypoints, Type = ".jpg")
+
+Heron2020_waypoints$Photo <- paste (Heron2020_waypoints$Name,Heron2020_waypoints$Type)
+
+Heron2020_coordinates <- select(Heron2020_waypoints, "Photo", "Date":"Longitude")
+
+colnames(Heron2020_waypoints)
+#head(Heron2020_waypoints)
+
+# Combine with CoralNet output
+#Rename photo column
+names(Heron2020_percent_covers)[names(Heron2020_percent_covers) == "Name"] <- "Photo"
+
+Heron2020Summary <- left_join(Heron2020_percent_covers, Heron2020_coordinates, by = "Photo")
+
+Heron2020Summary <- select(Heron2020Summary, "Photo","Latitude":"Longitude", "ACR-BRA":"Date" )
+
+# Write to file
+write.csv(Heron2020Summary, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/Cover/Heron2020Summary.csv")
+
+
+#wrangle photo names 2019
+Heron2019_waypoints <- add_column(Heron2019_waypoints, Type2 = ".JPG")
+
+Heron2019_waypoints$Photo <- paste (Heron2019_waypoints$Name,Heron2019_waypoints$Type2)
+
+Heron2019_coordinates <- select(Heron2019_waypoints, "Photo", "Date":"Longitude")
+
+colnames(Heron2019_coordinates)
+
+
+# Combine with CoralNet output
+#Rename photo column
+names(Heron2019_percent_covers)[names(Heron2019_percent_covers) == "Name"] <- "Photo"
+
+Heron2019Summary <- left_join(Heron2019_percent_covers, Heron2019_coordinates, by = "Photo")
+
+Heron2019Summary <- select(Heron2019Summary, "Photo","Latitude":"Longitude", "ACR-BRA":"Date" )
+
+# Write to file
+write.csv(Heron2020Summary, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/Cover/Heron2020Summary.csv")
+
+```
+

@@ -1,0 +1,137 @@
+---
+title: "DBFtoCSV"
+author: "Eva Kovacs"
+date: "19/03/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## packages
+
+```{r what you need }
+install.packages("tidyverse")
+install.packages("janitor")
+install.packages("skimr")
+install.packages("stringr")
+install.packages("data.table")
+install.packages("ggthemes")
+install.packages("RColorBrewer")
+install.packages("gmodels")
+install.packages("dplyr")
+install.packages("plyr")
+install.packages("foreign")
+##install.packages('Rtools')
+##install.packages('jwbannister/seepsVeg')
+
+
+library(tidyverse) # use install.packages("tidyverse") if receive an error message
+library(janitor) # use install.packages("janitor") if receive an error message
+library(skimr)  # use install.packages("skimr") if receive an error message
+library(stringr) # use install.packages("stringr") if receive an error message
+library(data.table)
+library(ggthemes)
+library(RColorBrewer)
+library(gmodels)
+library(dplyr)
+library(plyr)
+library(foreign)
+##library(Rtools)
+##library(jwbannister/seepsVeg)
+
+```
+
+
+# Set the number of significant digits to preserve
+
+```{r}
+
+# Set
+options(digits = 10)
+
+#Check
+options()
+
+```
+
+# Convert dbf to csv
+
+```{r}
+
+# read dbfs
+D1 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20201031_Heron_Dive_transects.dbf", as.is = T)
+D2 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20201101_Dive_transects.dbf", as.is = T)
+D3 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20201102_Dive_transects.dbf", as.is = T)
+D4 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20201104_Dive_transects.dbf", as.is = T)
+D5 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20201105_Dive_transects.dbf", as.is = T)
+S1 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20201031_Heron_Snorkel_transects.dbf", as.is = T)
+S2 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20201101_Snorkel_transects.dbf", as.is = T)
+S3 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20201102_Snorkel2_transects.dbf", as.is = T)
+S4 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20201104_Snorkel_transects.dbf", as.is = T)
+S5 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20201105_Snorkel_transects.dbf", as.is = T)
+
+# remove excess info
+CCMR <- CCMR %>%
+  select(-Latitude, -Longitude)
+
+FNGBR <- FNGBR %>%
+  select(-Latitude, -Longitude)
+
+# MKY <- MKY %>%
+#   select(-Latitude, -Longitude)
+
+TSV <- TSV %>%
+  select(-Latitude, -Longitude)
+
+# save rds or csv
+# saveRDS(CCMR, file = "E:/Data/3DGBR_HabMap/Modelling/GEE_Output/Pixels_0-11/export_dbfs/CCMR.rds")
+# saveRDS(FNGBR, file = "E:/Data/3DGBR_HabMap/Modelling/GEE_Output/Pixels_0-11/export_dbfs/FNGBR.rds")
+# saveRDS(MKY, file = "E:/Data/3DGBR_HabMap/Modelling/GEE_Output/Pixels_0-11/export_dbfs/MKY.rds")
+# saveRDS(TSV, file = "E:/Data/3DGBR_HabMap/Modelling/GEE_Output/Pixels_0-11/export_dbfs/TSV.rds")
+
+write.csv(D1, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2020D1.csv")
+write.csv(D2, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2020D2.csv")
+write.csv(D3, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2020D3.csv")
+write.csv(D4, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2020D4.csv")
+write.csv(D5, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2020D5.csv")
+write.csv(S1, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2020S1.csv")
+write.csv(S2, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2020S2.csv")
+write.csv(S3, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2020S3.csv")
+write.csv(S4, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2020S4.csv")
+write.csv(S5, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2020S5.csv")
+
+
+
+```
+
+#2019
+
+```{r}
+
+# read dbfs
+D1 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20191026_HR_DIVE_PICTURE.dbf", as.is = T)
+D2 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20191027_HR_DIVE_PICTURE.dbf", as.is = T)
+D3 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20191028_HR_DIVE_PICTURE.dbf", as.is = T)
+D4 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20191029_HR_DIVE_PICTURE.dbf", as.is = T)
+D5 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20191029_HR_DIVE2_PICTURE.dbf", as.is = T)
+D6 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20191030_DIVE-PICTURE.dbf", as.is = T)
+D7 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20191031_HR_DIVE_PICTURE.dbf", as.is = T)
+S1 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20191026_HR_Snorkel_Picture.dbf", as.is = T)
+S2 <- read.dbf("C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/20191031_HR_SNORKEL_PICTURE.dbf", as.is = T)
+
+write.csv(D1, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2019D1.csv")
+write.csv(D2, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2019D2.csv")
+write.csv(D3, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2019D3.csv")
+write.csv(D4, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2019D4.csv")
+write.csv(D5, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2019D5.csv")
+write.csv(D6, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2019D6.csv")
+write.csv(D7, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2019D7.csv")
+write.csv(S1, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2019S1.csv")
+write.csv(S2, file = "C:/Users/uqekovac/Documents/R/Coding/HeronFigures/HeronPangaea/data/2019S2.csv")
+
+
+
+```
+
